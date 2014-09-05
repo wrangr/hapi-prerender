@@ -1,8 +1,14 @@
 # hapi-prerender
 
-HAPI plugin for prerendering javascript-rendered pages on the fly for SEO
+[![Build Status](https://travis-ci.org/wrangr/hapi-prerender.png)](https://travis-ci.org/wrangr/hapi-prerender)
 
-## Examples:
+HAPI plugin for prerendering javascript-rendered pages on the fly for SEO.
+
+## Installing
+
+`$ npm install hapi-prerender --save`
+
+## Examples
 
 Using `prerender.io` hosted service.
 
@@ -34,6 +40,40 @@ server.pack.register({
 
 ## Options
 
-* `serviceUrl`
-* `token`
-* `protocol`
+* `token`: If you have an account on prerender.io and want to use your token.
+* `serviceUrl`: URL to prerender service. Defaults to
+  `http://service.prerender.io/`. If you host your own prerender server you can
+  use this to point the plugin to your server.
+* `protocol`: Option to hard-set the protocol. Useful for sites that are
+  available on both http and https
+
+## TODO
+
+* Cloudflare Flexible SSL support
+* Heroku SSL Addon support
+* `beforeRender` and `afterRender` callbacks
+
+## License
+
+The MIT License (MIT)
+
+Copyright (c) 2014 Lupo Montero &lt;lupo@wrangr.com&gt;
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
