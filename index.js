@@ -4,6 +4,7 @@
 //
 
 var Url = require('url');
+var Zlib = require('zlib');
 var Request = require('request');
 var Hoek = require('hoek');
 
@@ -71,15 +72,6 @@ internals.extensionsToIgnore = [
   '.torrent'
 ];
 
-// Defaults
-
-internals.defaults = {
-  serviceUrl: process.env.PRERENDER_SERVICE_URL || 'http://service.prerender.io/',
-  token: process.env.PRERENDER_TOKEN,
-  protocol: false
-};
-
-
 internals.shouldShowPrerenderedPage = function (req) {
   var userAgent = req.headers['user-agent'];
   var bufferAgent = req.headers['x-bufferbot'];
@@ -114,9 +106,17 @@ internals.shouldShowPrerenderedPage = function (req) {
   return isRequestingPrerenderedPage;
 };
 
+//
+// Public API
+//
+
 exports.register = function (plugin, options, next) {
 
-  var settings = Hoek.applyToDefaults(internals.defaults, options);
+  var settings = Hoek.applyToDefaults({
+    serviceUrl: process.env.PRERENDER_SERVICE_URL || 'http://service.prerender.io/',
+    token: process.env.PRERENDER_TOKEN,
+    protocol: false
+  }, options);
 
   function buildApiUrl(req) {
     var prerenderUrl = settings.serviceUrl;
@@ -153,6 +153,24 @@ exports.register = function (plugin, options, next) {
     });
   }
 
+  function gzipResponse(resp, cb) {
+    var gunzip = Zlib.createGunzip();
+    var content = '';
+
+    gunzip.on('data', function (chunk) {
+      content += chunk;
+    });
+
+    gunzip.on('end', function () {
+      resp.body = content;
+      delete resp.headers['content-encoding'];
+      delete resp.headers['content-length'];
+      cb(null, resp);
+    });
+
+    resp.pipe(gunzip);
+  }
+
   function getPrerenderedPageResponse(req, cb) {
     var reqOptions = {
       uri: Url.parse(buildApiUrl(req)),
@@ -174,7 +192,7 @@ exports.register = function (plugin, options, next) {
       .on('response', function (resp) {
         var encoding = resp.headers['content-encoding'];
         if (encoding && encoding === 'gzip') {
-          gunzipResponse(resp, cb);
+          gzipResponse(resp, cb);
         } else {
           plainResponse(resp, cb);
         }
