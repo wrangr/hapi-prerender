@@ -2,16 +2,22 @@
   "name": "hapi-prerender",
   "version": "0.0.0",
   "description": "hapi middleware for prerendering javascript-rendered pages on the fly for SEO",
+  "author": "Lupo Montero",
+  "license": "MIT",
   "main": "index.js",
-  "scripts": {
-    "test": "./node_modules/lab/bin/lab test.js -v"
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/wrangr/hapi-prerender"
   },
   "keywords": [
     "hapi",
-    "prerender"
+    "prerender",
+    "prerender.io",
+    "angular",
+    "backbone",
+    "emberjs",
+    "seo"
   ],
-  "author": "Lupo Montero",
-  "license": "MIT",
   "peerDependencies": {
     "hapi": "6.x.x"
   },
@@ -23,5 +29,8 @@
     "hapi": "^6.7.1",
     "lab": "^4.3.0",
     "nock": "^0.46.0"
+  },
+  "scripts": {
+    "test": "./node_modules/lab/bin/lab test.js -v"
   }
 }
