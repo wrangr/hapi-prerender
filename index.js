@@ -115,7 +115,9 @@ exports.register = function (plugin, options, next) {
   var settings = Hoek.applyToDefaults({
     serviceUrl: process.env.PRERENDER_SERVICE_URL || 'http://service.prerender.io/',
     token: process.env.PRERENDER_TOKEN,
-    protocol: false
+    protocol: false,
+    beforeRender: function (req, done) { done(); },
+    afterRender: function (req, resp) {}
   }, options);
 
   function buildApiUrl(req) {
@@ -203,15 +205,32 @@ exports.register = function (plugin, options, next) {
     // Only handle requests with _escaped_fragment_ query param.
     if (!internals.shouldShowPrerenderedPage(req)) { return next(); }
 
-    getPrerenderedPageResponse(req, function (err, resp) {
-      if (err) {
-        return console.error(err);
-      }
-
-      var reply = next(resp.body);
-      reply.code(resp.statusCode);
+    function reply(resp) {
+      var r = next(resp.body);
+      r.code(resp.statusCode);
       Object.getOwnPropertyNames(resp.headers).forEach(function (k) {
-        reply.header(k, resp.headers[k]);
+        r.header(k, resp.headers[k]);
+      });
+    }
+
+    settings.beforeRender(req, function (err, cached) {
+      if (!err && cached && typeof cached.body == 'string') {
+        return reply(cached);
+      }
+    
+      getPrerenderedPageResponse(req, function (err, resp) {
+        if (err) {
+          return console.error(err);
+        }
+
+        var prerenderedResponse = {
+          statusCode: resp.statusCode,
+          headers: resp.headers,
+          body: resp.body
+        };
+
+        settings.afterRender(req, prerenderedResponse);
+        reply(prerenderedResponse);
       });
     });
   });

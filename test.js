@@ -2,6 +2,7 @@
 // Deps
 //
 
+var Url = require('url');
 var Zlib = require('zlib');
 var Lab = require('lab');
 var Hapi = require('hapi');
@@ -101,7 +102,7 @@ describe('hapi-prerender', function () {
 
     it('should return a prerendered response when known bot', function (done) {
 
-      var scope = Nock('http://service.prerender.io')
+      Nock('http://service.prerender.io')
         .get('/http://127.0.0.1:8888/foo?bar=true')
         .reply(301, '<html><body>prerendered!</body></html>', {
           'X-Prerender': 'foo'
@@ -123,7 +124,7 @@ describe('hapi-prerender', function () {
 
     it('should return prerendered response if _escaped_fragment_', function (done) {
 
-      var scope = Nock('http://service.prerender.io')
+      Nock('http://service.prerender.io')
         .get('/http://127.0.0.1:8888/?_escaped_fragment_=')
         .reply(301, '<html><body>prerendered!</body></html>', {
           'X-Prerender': 'foo'
@@ -208,7 +209,7 @@ describe('hapi-prerender', function () {
     it('should return a prerendered gzipped response', function (done) {
     
       Zlib.gzip(new Buffer('<html></html>', 'utf-8'), function (err, zipped) {
-        var scope = Nock('http://service.prerender.io')
+        Nock('http://service.prerender.io')
           .get('/http://127.0.0.1:8888/foo')
           .reply(200, [ zipped ], { 'content-encoding': 'gzip' });
 
@@ -233,8 +234,6 @@ describe('hapi-prerender', function () {
 
     it('should build the correct api url for the Heroku SSL Addon support with double value');
 
-    it('should return a prerendered response if a string is returned from beforeRender');
-
   });
 
   describe('with token option', function () {
@@ -251,7 +250,7 @@ describe('hapi-prerender', function () {
 
     it('should include X-Prerender-Token header in request', function (done) {
     
-      var scope = Nock('http://service.prerender.io')
+      Nock('http://service.prerender.io')
         .matchHeader('X-Prerender-Token', 'MY_TOKEN')
         .get('/http://127.0.0.1:8888/?_escaped_fragment_=')
         .reply(301, '<html><body>prerendered!</body></html>');
@@ -285,7 +284,7 @@ describe('hapi-prerender', function () {
 
     it('should send request to custom service', function (done) {
     
-      var scope = Nock('http://127.0.0.1:3000')
+      Nock('http://127.0.0.1:3000')
         .get('/http://127.0.0.1:8888/?_escaped_fragment_=')
         .reply(301, '<html><body>prerendered!</body></html>');
 
@@ -322,7 +321,7 @@ describe('hapi-prerender', function () {
 
     it('should send request to given serviceUrl including token', function (done) {
     
-      var scope = Nock('http://foo')
+      Nock('http://foo')
         .matchHeader('X-Prerender-Token', 'MY_TOKEN')
         .get('/http://127.0.0.1:8888/?_escaped_fragment_=')
         .reply(301, '<html><body>prerendered!</body></html>');
@@ -340,6 +339,62 @@ describe('hapi-prerender', function () {
 
     });
 
+  });
+
+  describe('with beforeRender and afterRender options', function () {
+
+    var server;
+    var cache = {};
+
+    before(function (done) {
+      server = initServer({
+        beforeRender: function (req, done) {
+          done(null, cache[req.url.href]);
+        },
+        afterRender: function (req, prerendered) {
+          cache[req.url.href] = prerendered;
+        }
+      }, done);
+    });
+
+    after(function (done) {
+      server.stop(done);
+    });
+
+    it('should use prerender service before we cache', function (done) {
+
+      Nock('http://service.prerender.io')
+        .get('/http://127.0.0.1:8888/?_escaped_fragment_=')
+        .reply(200, 'prerendered!');
+
+      Request({
+        uri: 'http://127.0.0.1:8888/?_escaped_fragment_=',
+        headers: { 'User-Agent': 'not a bot' }
+      }, function (err, resp) {
+        expect(err).to.not.exist;
+        expect(resp.statusCode).to.equal(200);
+        expect(resp.headers).to.exist;
+        expect(resp.body).to.equal('prerendered!');
+        done();
+      });
+
+    });
+
+    it('should use cached prerendered response after we\'ve cached', function (done) {
+
+      Request({
+        uri: 'http://127.0.0.1:8888/?_escaped_fragment_=',
+        headers: { 'User-Agent': 'not a bot' }
+      }, function (err, resp) {
+        expect(err).to.not.exist;
+        expect(resp.statusCode).to.equal(200);
+        expect(resp.headers).to.exist;
+        expect(resp.body).to.equal('prerendered!');
+        done();
+      });
+
+    });
+  
   });
 
   describe('with whitelist option', function () {

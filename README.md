@@ -46,12 +46,35 @@ server.pack.register({
   use this to point the plugin to your server.
 * `protocol`: Option to hard-set the protocol. Useful for sites that are
   available on both http and https
+* `beforeRender`: This method gets called just before prerendering. If a value
+  is passed in the `done()` callback this will be returned to the client. This
+  can be used for caching.
+  ```js
+  ...
+  beforeRender: function (req, done) {
+    // `cachedResponse` should be an object with `statusCode`, `headers` and
+    // `body` properties.
+    done(cachedResponse);
+  },
+  ...
+  ```
+* `afterRender`: This method gets called after a page has been prerendered using
+  the prerender service. Use this method to cache prerendered responses.
+  ```js
+  ...
+  afterRender: function (req, prerenderedResponse) {
+    // cache `prerenderedResponse` so it can later be used by `afterRender`.
+    // `prerenderedResponse` is an object with `statusCode`, `headers` and
+    // `body` properties.
+  },
+  ...
+  ```
 
 ## TODO
 
 * Cloudflare Flexible SSL support
 * Heroku SSL Addon support
-* `beforeRender` and `afterRender` callbacks
+* Implement `whitelist` and `blacklist` options
 
 ## License
 
