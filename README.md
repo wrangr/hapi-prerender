@@ -40,35 +40,51 @@ server.pack.register({
 
 ## Options
 
-* `token`: If you have an account on prerender.io and want to use your token.
-* `serviceUrl`: URL to prerender service. Defaults to
-  `http://service.prerender.io/`. If you host your own prerender server you can
-  use this to point the plugin to your server.
-* `protocol`: Option to hard-set the protocol. Useful for sites that are
-  available on both http and https
-* `beforeRender`: This method gets called just before prerendering. If a value
-  is passed in the `done()` callback this will be returned to the client. This
-  can be used for caching.
-  ```js
-  ...
-  beforeRender: function (req, done) {
-    // `cachedResponse` should be an object with `statusCode`, `headers` and
-    // `body` properties.
-    done(cachedResponse);
-  },
-  ...
-  ```
-* `afterRender`: This method gets called after a page has been prerendered using
-  the prerender service. Use this method to cache prerendered responses.
-  ```js
-  ...
-  afterRender: function (req, prerenderedResponse) {
-    // cache `prerenderedResponse` so it can later be used by `afterRender`.
-    // `prerenderedResponse` is an object with `statusCode`, `headers` and
-    // `body` properties.
-  },
-  ...
-  ```
+### `token`
+
+If you have an account on prerender.io and want to use your token.
+
+### `serviceUrl`
+
+URL to prerender service. Defaults to `http://service.prerender.io/`. If you
+host your own prerender server you can use this to point the plugin to your
+server.
+
+### `protocol`
+
+Option to hard-set the protocol. Useful for sites that are available on both
+http and https.
+
+### `beforeRender`
+
+This method gets called just before prerendering. If a value is passed in the
+`done()` callback this will be returned to the client. This can be used for
+caching.
+
+```js
+...
+beforeRender: function (req, done) {
+  // `cachedResponse` should be an object with `statusCode`, `headers` and
+  // `body` properties.
+  done(cachedResponse);
+},
+...
+```
+
+### `afterRender`
+
+This method gets called after a page has been prerendered using the prerender
+service. Use this method to cache prerendered responses.
+
+```js
+...
+afterRender: function (req, prerenderedResponse) {
+  // cache `prerenderedResponse` so it can later be used by `afterRender`.
+  // `prerenderedResponse` is an object with `statusCode`, `headers` and
+  // `body` properties.
+},
+...
+```
 
 ## TODO
 
@@ -99,4 +115,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
-
