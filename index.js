@@ -220,7 +220,10 @@ exports.register = function (plugin, options, next) {
     
       getPrerenderedPageResponse(req, function (err, resp) {
         if (err) {
-          return console.error(err);
+          console.error('Error getting prerendered page.');
+          console.error(err);
+          console.error('Falling back to unrendered (normal) reponse...');
+          return next();
         }
 
         var prerenderedResponse = {
