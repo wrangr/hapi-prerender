@@ -110,7 +110,7 @@ internals.shouldShowPrerenderedPage = function (req) {
 // Public API
 //
 
-exports.register = function (plugin, options, next) {
+exports.register = function (server, options, next) {
 
   var settings = Hoek.applyToDefaults({
     serviceUrl: process.env.PRERENDER_SERVICE_URL || 'http://service.prerender.io/',
@@ -201,7 +201,7 @@ exports.register = function (plugin, options, next) {
       });
   }
 
-  plugin.ext('onRequest', function (req, next) {
+  server.ext('onRequest', function (req, next) {
     // Only handle requests with _escaped_fragment_ query param.
     if (!internals.shouldShowPrerenderedPage(req)) { return next(); }
 
