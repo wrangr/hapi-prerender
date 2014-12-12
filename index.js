@@ -201,7 +201,7 @@ exports.register = function (server, options, next) {
       });
   }
 
-  plugin.ext('onRequest', function (req, next) {
+  server.ext('onRequest', function (req, next) {
     // Only handle requests with _escaped_fragment_ query param.
     if (!internals.shouldShowPrerenderedPage(req)) { return next(); }
 
