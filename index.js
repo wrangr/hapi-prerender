@@ -110,7 +110,7 @@ internals.shouldShowPrerenderedPage = function (req) {
 // Public API
 //
 
-exports.register = function (plugin, options, next) {
+exports.register = function (server, options, next) {
 
   var settings = Hoek.applyToDefaults({
     serviceUrl: process.env.PRERENDER_SERVICE_URL || 'http://service.prerender.io/',
