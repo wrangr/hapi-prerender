@@ -19,16 +19,17 @@
     "seo"
   ],
   "peerDependencies": {
-    "hapi": "6.x.x"
+    "hapi": "8.x.x"
   },
   "dependencies": {
+    "code": "^1.2.1",
     "hoek": "^2.4.1",
     "request": "^2.40.0"
   },
   "devDependencies": {
-    "hapi": "^6.7.1",
-    "lab": "^4.3.0",
-    "nock": "^0.46.0"
+    "hapi": "^8.0.0",
+    "lab": "^5.1.0",
+    "nock": "^0.52.0"
   },
   "scripts": {
     "test": "./node_modules/lab/bin/lab test.js -v"

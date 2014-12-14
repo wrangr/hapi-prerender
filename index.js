@@ -106,6 +106,7 @@ internals.shouldShowPrerenderedPage = function (req) {
   return isRequestingPrerenderedPage;
 };
 
+
 //
 // Public API
 //
@@ -201,12 +202,12 @@ exports.register = function (plugin, options, next) {
       });
   }
 
-  plugin.ext('onRequest', function (req, next) {
+  plugin.ext('onRequest', function (req, reply) {
     // Only handle requests with _escaped_fragment_ query param.
-    if (!internals.shouldShowPrerenderedPage(req)) { return next(); }
+    if (!internals.shouldShowPrerenderedPage(req)) { return reply.continue(); }
 
-    function reply(resp) {
-      var r = next(resp.body);
+    function sendResponse(resp) {
+      var r = reply(resp.body);
       r.code(resp.statusCode);
       Object.getOwnPropertyNames(resp.headers).forEach(function (k) {
         r.header(k, resp.headers[k]);
@@ -214,8 +215,8 @@ exports.register = function (plugin, options, next) {
     }
 
     settings.beforeRender(req, function (err, cached) {
-      if (!err && cached && typeof cached.body == 'string') {
-        return reply(cached);
+      if (!err && cached && typeof cached.body === 'string') {
+        return sendResponse(cached);
       }
     
       getPrerenderedPageResponse(req, function (err, resp) {
@@ -223,7 +224,7 @@ exports.register = function (plugin, options, next) {
           console.error('Error getting prerendered page.');
           console.error(err);
           console.error('Falling back to unrendered (normal) reponse...');
-          return next();
+          return reply.continue();
         }
 
         var prerenderedResponse = {
@@ -233,7 +234,7 @@ exports.register = function (plugin, options, next) {
         };
 
         settings.afterRender(req, prerenderedResponse);
-        reply(prerenderedResponse);
+        sendResponse(prerenderedResponse);
       });
     });
   });

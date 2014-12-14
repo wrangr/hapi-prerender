@@ -5,8 +5,8 @@
 var Url = require('url');
 var Zlib = require('zlib');
 var Lab = require('lab');
+var Code = require('code');
 var Hapi = require('hapi');
-var Hoek = require('hoek');
 var Request = require('request');
 var Nock = require('nock');
 
@@ -20,7 +20,7 @@ var describe = lab.describe;
 var it = lab.it;
 var before = lab.before;
 var after = lab.after;
-var expect = Lab.expect;
+var expect = Code.expect;
 
 
 //
@@ -35,39 +35,30 @@ var PrerenderPlugin = require('./');
 //
 
 function initServer(opt, done) {
-
-  var options = Hoek.clone(opt);
-
-  // Create new server.
-  var server = new Hapi.Server(8888);
-
-  server.pack.register({
-    plugin: PrerenderPlugin,
-    options: options
+  var server = new Hapi.Server();
+  server.connection({ host: '127.0.0.1', port: 8888 });
+  server.route({
+    method: 'GET',
+    path: '/foo.css',
+    handler: function (request, reply) {
+      return reply('body { color: pink; }');
+    }
+  });
+  server.route({
+    method: '*',
+    path: '/{p*}',
+    handler: function (request, reply) {
+      return reply('ok');
+    }
+  });
+  server.register({
+    register: PrerenderPlugin,
+    options: opt
   }, function (err) {
     expect(err).to.not.exist;
-
-    server.route({
-      method: '*',
-      path: '/',
-      handler: function (request, reply) {
-        reply('ok');
-      }
-    });
-
-    server.route({
-      method: 'GET',
-      path: '/foo.css',
-      handler: function (request, reply) {
-        reply('body { color: pink; }');
-      }
-    });
-
-    server.start(done);
   }); 
-
+  server.start(done);
   return server;
-
 }
 
 
@@ -81,7 +72,7 @@ describe('hapi-prerender', function () {
 
     var server = new Hapi.Server();
 
-    server.pack.register(PrerenderPlugin, function (err) {
+    server.register(PrerenderPlugin, function (err) {
       expect(err).to.not.exist;
       done();
     }); 

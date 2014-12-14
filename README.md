@@ -10,14 +10,23 @@ HAPI plugin for prerendering javascript-rendered pages on the fly for SEO.
 
 ## Examples
 
-Using `prerender.io` hosted service.
+Basic usage:
 
 ```js
 var Hapi = require('hapi');
+var PrerenderPlugin = require('hapi-prerender');
 var server = new Hapi.Server();
 
-server.pack.register({
-  plugin: require('hapi-prerender'),
+server.register(PrerenderPlugin, function (err) {
+  // plugin was registered!
+});
+```
+
+Using `prerender.io` hosted service.
+
+```js
+server.register({
+  register: require('hapi-prerender'),
   options: {
     token: 'YOUR-PRERENDER.IO-TOKEN'
   }
@@ -27,11 +36,8 @@ server.pack.register({
 Using your own prerender server:
 
 ```js
-var Hapi = require('hapi');
-var server = new Hapi.Server();
-
-server.pack.register({
-  plugin: require('hapi-prerender'),
+server.register({
+  register: require('hapi-prerender'),
   options: {
     serviceUrl: 'http://your-prerender-server'
   }
