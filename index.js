@@ -81,7 +81,7 @@ internals.shouldShowPrerenderedPage = function (req) {
   if (req.method.toLowerCase() !== 'get') { return false; }
 
   //if it contains _escaped_fragment_, show prerendered page
-  if (req.url.query.hasOwnProperty('_escaped_fragment_')) {
+  if (typeof req.url.query._escaped_fragment_ !== 'undefined') {
     isRequestingPrerenderedPage = true;
   }
 
@@ -111,7 +111,7 @@ internals.shouldShowPrerenderedPage = function (req) {
 // Public API
 //
 
-exports.register = function (plugin, options, next) {
+exports.register = function (server, options, next) {
 
   var settings = Hoek.applyToDefaults({
     serviceUrl: process.env.PRERENDER_SERVICE_URL || 'http://service.prerender.io/',
@@ -202,7 +202,7 @@ exports.register = function (plugin, options, next) {
       });
   }
 
-  plugin.ext('onRequest', function (req, reply) {
+  server.ext('onRequest', function (req, reply) {
     // Only handle requests with _escaped_fragment_ query param.
     if (!internals.shouldShowPrerenderedPage(req)) { return reply.continue(); }
 
