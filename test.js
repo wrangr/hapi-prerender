@@ -56,7 +56,7 @@ function initServer(opt, done) {
     options: opt
   }, function (err) {
     expect(err).to.not.exist;
-  }); 
+  });
   server.start(done);
   return server;
 }
@@ -72,10 +72,12 @@ describe('hapi-prerender', function () {
 
     var server = new Hapi.Server();
 
+    server.connection({ host: '127.0.0.1', port: 8888 });
+
     server.register(PrerenderPlugin, function (err) {
       expect(err).to.not.exist;
       done();
-    }); 
+    });
 
   });
 
@@ -198,7 +200,7 @@ describe('hapi-prerender', function () {
     });
 
     it('should return a prerendered gzipped response', function (done) {
-    
+
       Zlib.gzip(new Buffer('<html></html>', 'utf-8'), function (err, zipped) {
         Nock('http://service.prerender.io')
           .get('/http://127.0.0.1:8888/foo')
@@ -240,7 +242,7 @@ describe('hapi-prerender', function () {
     });
 
     it('should include X-Prerender-Token header in request', function (done) {
-    
+
       Nock('http://service.prerender.io')
         .matchHeader('X-Prerender-Token', 'MY_TOKEN')
         .get('/http://127.0.0.1:8888/?_escaped_fragment_=')
@@ -274,7 +276,7 @@ describe('hapi-prerender', function () {
     });
 
     it('should send request to custom service', function (done) {
-    
+
       Nock('http://127.0.0.1:3000')
         .get('/http://127.0.0.1:8888/?_escaped_fragment_=')
         .reply(301, '<html><body>prerendered!</body></html>');
@@ -311,7 +313,7 @@ describe('hapi-prerender', function () {
     });
 
     it('should send request to given serviceUrl including token', function (done) {
-    
+
       Nock('http://foo')
         .matchHeader('X-Prerender-Token', 'MY_TOKEN')
         .get('/http://127.0.0.1:8888/?_escaped_fragment_=')
@@ -385,11 +387,11 @@ describe('hapi-prerender', function () {
       });
 
     });
-  
+
   });
 
   describe('with whitelist option', function () {
-  
+
     it('should ignore if url is not whitelisted');
 
     it('should return a prerendered response if url is whitelisted');
@@ -397,7 +399,7 @@ describe('hapi-prerender', function () {
   });
 
   describe('with blacklist option', function () {
-  
+
     it('should ignore if the url is blacklisted');
 
     it('should return a prerendered response if url is not blacklisted');
@@ -409,4 +411,3 @@ describe('hapi-prerender', function () {
   });
 
 });
-
