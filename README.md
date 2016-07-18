@@ -1,6 +1,8 @@
 # hapi-prerender
 
 [![Build Status](https://travis-ci.org/wrangr/hapi-prerender.png)](https://travis-ci.org/wrangr/hapi-prerender)
+[![Dependency Status](https://david-dm.org/wrangr/hapi-prerender.svg?style=flat)](https://david-dm.org/wrangr/hapi-prerender)
+[![devDependency Status](https://david-dm.org/wrangr/hapi-prerender/dev-status.png)](https://david-dm.org/wrangr/hapi-prerender#info=devDependencies)
 
 HAPI plugin for prerendering javascript-rendered pages on the fly for SEO.
 
