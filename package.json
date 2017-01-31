@@ -19,7 +19,7 @@
     "seo"
   ],
   "peerDependencies": {
-    "hapi": "13.x.x"
+    "hapi": "^14.x.x"
   },
   "dependencies": {
     "hoek": "^4.0.1",
@@ -27,7 +27,7 @@
   },
   "devDependencies": {
     "code": "^3.0.1",
-    "hapi": "^13.5.0",
+    "hapi": "^14.x.x",
     "lab": "^10.9.0",
     "nock": "^8.0.0"
   },
