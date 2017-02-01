@@ -18,18 +18,15 @@
     "emberjs",
     "seo"
   ],
-  "peerDependencies": {
-    "hapi": "^14.x.x"
-  },
   "dependencies": {
     "hoek": "^4.0.1",
     "request": "^2.40.0"
   },
   "devDependencies": {
-    "code": "^3.0.1",
-    "hapi": "^14.x.x",
-    "lab": "^10.9.0",
-    "nock": "^8.0.0"
+    "code": "^4.0.0",
+    "hapi": "^16.x.x",
+    "lab": "^12.1.0",
+    "nock": "^9.0.2"
   },
   "scripts": {
     "test": "./node_modules/lab/bin/lab test.js -v"
