@@ -69,7 +69,8 @@ internals.extensionsToIgnore = [
   '.iso',
   '.flv',
   '.m4v',
-  '.torrent'
+  '.torrent',
+  '.svg'
 ];
 
 internals.shouldShowPrerenderedPage = function (req) {
