@@ -18,6 +18,8 @@ internals.crawlerUserAgents = [
   // 'googlebot',
   // 'yahoo',
   // 'bingbot',
+  'facebot',
+  'slackbot',
   'baiduspider',
   'facebookexternalhit',
   'twitterbot',
