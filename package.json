@@ -20,7 +20,7 @@
   ],
   "dependencies": {
     "hoek": "^4.0.1",
-    "request": "^2.40.0"
+    "request": "^2.81.0"
   },
   "devDependencies": {
     "code": "^4.0.0",

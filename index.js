@@ -18,6 +18,8 @@ internals.crawlerUserAgents = [
   // 'googlebot',
   // 'yahoo',
   // 'bingbot',
+  'facebot',
+  'slackbot',
   'baiduspider',
   'facebookexternalhit',
   'twitterbot',
@@ -69,7 +71,8 @@ internals.extensionsToIgnore = [
   '.iso',
   '.flv',
   '.m4v',
-  '.torrent'
+  '.torrent',
+  '.svg'
 ];
 
 internals.shouldShowPrerenderedPage = function (req) {
